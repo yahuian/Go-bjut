@@ -13,3 +13,6 @@
 
 # goland
 .idea
+
+# log
+*.log
