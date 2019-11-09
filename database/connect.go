@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/YahuiAn/Go_bjut/model"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -24,6 +26,9 @@ func ConnectMysql(connString string) error {
 	db.DB().SetConnMaxLifetime(time.Second * 30)
 
 	DB = db
+
+	// 自动迁移表结构
+	DB.AutoMigrate(&model.Student{})
 
 	return nil
 }

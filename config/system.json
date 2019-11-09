@@ -10,5 +10,8 @@
     "address": "127.0.0.1",
     "mode": "debug",
     "port": "8080"
+  },
+  "session": {
+    "secret": "session_secret"
   }
 }
