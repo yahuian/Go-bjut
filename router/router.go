@@ -23,15 +23,15 @@ func NewRouter() *gin.Engine {
 		// 健康检查
 		v1.GET("ping", service.Ping)
 
-		v1.POST("/stu/register", student.Register)
-		v1.POST("/stu/login", student.Login)
+		v1.POST("/student/register", student.Register)
+		v1.POST("/student/login", student.Login)
 
 		// 需要登陆保护的
 		auth := v1.Group("")
 		auth.Use(middleware.AuthRequired())
 		{
-			auth.GET("stu/me", student.Home)
-			auth.DELETE("stu/logout", student.Logout)
+			auth.GET("student/me", student.Home)
+			auth.DELETE("student/logout", student.Logout)
 		}
 
 	}
