@@ -24,6 +24,7 @@ func NewRouter() *gin.Engine {
 		v1.GET("ping", service.Ping)
 
 		v1.POST("/student/register", student.Register)
+		v1.POST("/student/bjut-register", student.BjutRegister)
 		v1.POST("/student/login", student.Login)
 
 		// 需要登陆保护的
