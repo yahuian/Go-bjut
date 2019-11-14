@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/YahuiAn/Go_bjut/config"
-	"github.com/YahuiAn/Go_bjut/router"
+	"github.com/YahuiAn/Go-bjut/config"
+	"github.com/YahuiAn/Go-bjut/router"
+
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 )

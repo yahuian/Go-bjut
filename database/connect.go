@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/YahuiAn/Go_bjut/model"
+	"github.com/YahuiAn/Go-bjut/model"
 
 	"github.com/jinzhu/gorm"
 )

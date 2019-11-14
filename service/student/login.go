@@ -7,10 +7,10 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/YahuiAn/Go_bjut/database"
-	"github.com/YahuiAn/Go_bjut/model"
+	"github.com/YahuiAn/Go-bjut/database"
+	"github.com/YahuiAn/Go-bjut/model"
 
-	"github.com/YahuiAn/Go_bjut/logger"
+	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-gonic/gin"
 )
 

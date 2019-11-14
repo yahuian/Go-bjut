@@ -3,7 +3,7 @@ package student
 import (
 	"net/http"
 
-	"github.com/YahuiAn/Go_bjut/logger"
+	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )

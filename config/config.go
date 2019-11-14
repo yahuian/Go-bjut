@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/YahuiAn/Go_bjut/database"
+	"github.com/YahuiAn/Go-bjut/database"
 
 	"github.com/spf13/viper"
 )

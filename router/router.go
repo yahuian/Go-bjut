@@ -1,9 +1,9 @@
 package router
 
 import (
-	"github.com/YahuiAn/Go_bjut/middleware"
-	"github.com/YahuiAn/Go_bjut/service"
-	"github.com/YahuiAn/Go_bjut/service/student"
+	"github.com/YahuiAn/Go-bjut/middleware"
+	"github.com/YahuiAn/Go-bjut/service"
+	"github.com/YahuiAn/Go-bjut/service/student"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
