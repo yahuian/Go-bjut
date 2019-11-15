@@ -73,3 +73,5 @@ func Register(c *gin.Context) {
 	logger.Info.Println("注册成功", info.Nickname)
 	c.JSON(http.StatusOK, gin.H{"msg": "注册成功", "data": student.NickName})
 }
+
+// TODO 增加通过微信注册的方式
