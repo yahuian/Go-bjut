@@ -15,9 +15,9 @@ import (
 )
 
 type RegisterInfo struct {
-	Nickname   string `json:"nickname" binding:"required,min=2,max=30"`
-	Password   string `json:"password" binding:"required,min=8,max=40"`
-	PwdConfirm string `json:"pwdConfirm" binding:"required,min=8,max=40"`
+	NickName   string `binding:"required,min=2,max=30"`
+	Password   string `binding:"required,min=8,max=40"`
+	PwdConfirm string `binding:"required,min=8,max=40"`
 }
 
 // 学生注册
@@ -36,7 +36,7 @@ func Register(c *gin.Context) {
 	}
 
 	count := 0
-	err := database.DB.Model(&model.Student{}).Where("nick_name = ?", info.Nickname).Count(&count).Error
+	err := database.DB.Model(&model.Student{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 	if err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -57,7 +57,7 @@ func Register(c *gin.Context) {
 
 	student := model.Student{
 		User: model.User{
-			NickName: info.Nickname,
+			NickName: info.NickName,
 			Password: string(bytesPwd),
 		},
 	}
@@ -70,7 +70,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	logger.Info.Println("注册成功", info.Nickname)
+	logger.Info.Println("注册成功", info.NickName)
 	c.JSON(http.StatusOK, gin.H{"msg": "注册成功", "data": student.NickName})
 }
 
