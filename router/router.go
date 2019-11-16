@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/YahuiAn/Go-bjut/middleware"
 	"github.com/YahuiAn/Go-bjut/service"
+	"github.com/YahuiAn/Go-bjut/service/card"
 	"github.com/YahuiAn/Go-bjut/service/student"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -34,6 +35,8 @@ func NewRouter() *gin.Engine {
 			auth.GET("student/me", student.Home)
 			auth.POST("student/update", student.Update)
 			auth.DELETE("student/logout", student.Logout)
+
+			auth.POST("card/register", card.Register)
 		}
 
 	}
