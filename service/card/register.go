@@ -46,7 +46,7 @@ func Register(c *gin.Context) {
 
 	card := &model.Card{
 		Registrant: student.NickName,
-		Name:       info.RealName,
+		RealName:   info.RealName,
 		Sex:        info.Sex,
 		College:    info.College,
 		StuNumber:  info.StuNumber,

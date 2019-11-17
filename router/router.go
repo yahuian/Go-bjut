@@ -28,6 +28,8 @@ func NewRouter() *gin.Engine {
 		v1.POST("/student/bjut-register", student.BjutRegister)
 		v1.POST("/student/login", student.Login)
 
+		v1.GET("card/index", card.Index)
+
 		// 需要登陆保护的
 		auth := v1.Group("")
 		auth.Use(middleware.AuthRequired())

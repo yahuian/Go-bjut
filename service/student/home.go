@@ -33,7 +33,7 @@ func Home(c *gin.Context) {
 
 	student := model.Student{}
 
-	if err := database.DB.First(&student, uid).Error; err != nil {
+	if err := database.DB.First(&student, uid).Error; err != nil { // TODO 数据库查询换成scan
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
