@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/YahuiAn/Go-bjut/model"
+
 	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/logger"
-	"github.com/YahuiAn/Go-bjut/model"
 	"github.com/gin-contrib/sessions"
 
 	"github.com/gin-gonic/gin"
@@ -31,27 +32,14 @@ func Home(c *gin.Context) {
 	session := sessions.Default(c)
 	uid := session.Get("user_id")
 
-	student := model.Student{}
+	var student HomeInfo
 
-	if err := database.DB.First(&student, uid).Error; err != nil { // TODO 数据库查询换成scan
+	if err := database.DB.First(&model.Student{}, uid).Scan(&student).Error; err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
 
-	homeInfo := HomeInfo{
-		ID:        student.ID,
-		CreatedAt: student.CreatedAt,
-		NickName:  student.NickName,
-		Email:     student.Email,
-		Telephone: student.Telephone,
-		College:   student.College,
-		Major:     student.Major,
-		ClassName: student.ClassName,
-		StuNumber: student.StuNumber,
-		RealName:  student.RealName,
-	}
-
-	c.JSON(http.StatusOK, gin.H{"msg": homeInfo})
+	c.JSON(http.StatusOK, gin.H{"msg": student})
 	return
 }
