@@ -15,6 +15,6 @@ type Student struct {
 	College   string
 	Major     string
 	ClassName string
-	StuNumber string
+	StuNumber string `gorm:"unique"`
 	RealName  string
 }

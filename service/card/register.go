@@ -15,7 +15,7 @@ type cardInfo struct {
 	RealName  string `binding:"max=20"`
 	Sex       string // TODO 校验取值只能取male，female
 	College   string `binding:"max=20"`
-	StuNumber string `binding:"max=20"`
+	StuNumber string `binding:"required,max=20"`
 	Location  string `binding:"required,max=50"`
 }
 
@@ -25,12 +25,6 @@ func Register(c *gin.Context) {
 	if err := c.ShouldBindJSON(&info); err != nil {
 		logger.Error.Println("json信息错误", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
-		return
-	}
-
-	if info.RealName == "" && info.StuNumber == "" {
-		logger.Error.Println("请至少填写姓名或学号")
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "请至少填写姓名或学号"})
 		return
 	}
 
