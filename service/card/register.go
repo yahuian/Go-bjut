@@ -28,6 +28,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// TODO 将获取当前用户的函数抽出来
 	// 查找登记者是谁
 	session := sessions.Default(c)
 	uid := session.Get("user_id")
@@ -38,6 +39,19 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	count := 0
+	err := database.DB.Model(&model.Card{}).
+		Where("stu_number = ? and status != ?", info.StuNumber, model.SuccessfulNotification).Count(&count).Error
+	if err != nil {
+		logger.Error.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
+		return
+	}
+	if count > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"msg": "该卡片已经登记，且还未发送通知，请不要重复登记"})
+		return
+	}
+
 	card := &model.Card{
 		Registrant: student.NickName,
 		RealName:   info.RealName,
@@ -45,6 +59,7 @@ func Register(c *gin.Context) {
 		College:    info.College,
 		StuNumber:  info.StuNumber,
 		Location:   info.Location,
+		Status:     model.WaitingNotification,
 	}
 
 	if err := database.DB.Create(&card).Error; err != nil {

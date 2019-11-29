@@ -13,5 +13,16 @@
   },
   "session": {
     "secret": "session_secret"
+  },
+  "tencent": {
+    "card_sms": {
+      "sdkappid": "1400299618",
+      "appkey": "38510b84e92f38b2feaa4ae0e0f007ic",
+      "sign": "智慧北工大",
+      "tpl_id": 123654
+    }
+  },
+  "cron": {
+    "sms": "1h"
   }
 }

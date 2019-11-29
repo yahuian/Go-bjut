@@ -17,8 +17,8 @@ type cardDisplay struct {
 	StuNumber  string
 	Location   string
 	Registrant string
-	CreatedAt  time.Time
-	Flag       bool
+	CreatedAt  time.Time // TODO 返回前端可读性良好的时间格式
+	Status     string
 }
 
 func Index(c *gin.Context) {

@@ -10,5 +10,13 @@ type Card struct {
 	College    string
 	StuNumber  string
 	Location   string
-	Flag       bool // true表示已经给失主发送了短信
+	Status     string
 }
+
+// Status字段的值
+const (
+	WaitingNotification    = "等待通知"
+	SuccessfulNotification = "成功通知"
+	UnboundPhone           = "未绑定电话"
+	SmsAPIError            = "短信API错误"
+)
