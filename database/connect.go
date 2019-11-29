@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/spf13/viper"
+
 	"github.com/YahuiAn/Go-bjut/model"
 
 	"github.com/jinzhu/gorm"
@@ -24,6 +26,12 @@ func ConnectMysql(connString string) error {
 	db.DB().SetMaxOpenConns(100)
 	//超时
 	db.DB().SetConnMaxLifetime(time.Second * 30)
+
+	var mode bool
+	if viper.GetString("gin.mode") == "debug" {
+		mode = true
+	}
+	db.LogMode(mode)
 
 	DB = db
 
