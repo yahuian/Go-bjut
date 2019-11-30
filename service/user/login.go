@@ -15,8 +15,8 @@ import (
 )
 
 type LoginInfo struct {
-	Nickname string `json:"nickname" binding:"required,min=2,max=30"`
-	Password string `json:"password" binding:"required,min=8,max=40"`
+	Nickname string `binding:"required,min=2,max=30"`
+	Password string `binding:"required,min=8,max=40"`
 }
 
 // 用户登录

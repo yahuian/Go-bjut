@@ -41,8 +41,8 @@ type baseInfo struct {
 
 // 登录bjut正方教务系统所需信息
 type stuInfo struct {
-	Number   string `json:"xh"` // xh表示学号
-	Password string `json:"mm"` // mm表示密码（ps: 该命名来源于正方教务系统）
+	Number   string
+	Password string
 }
 
 func BjutRegister(c *gin.Context) {
