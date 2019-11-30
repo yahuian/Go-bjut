@@ -76,6 +76,7 @@ func BjutRegister(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": baseInfoAPI + "接口请求失败"})
 		return
 	}
+	defer resp.Body.Close()
 	if resp.Status != "200 OK" {
 		logger.Error.Printf(resp.Status)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "请检查教务账号密码是否有误"})
