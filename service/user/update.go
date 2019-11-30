@@ -3,8 +3,6 @@ package user
 import (
 	"net/http"
 
-	"github.com/gin-contrib/sessions"
-
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/YahuiAn/Go-bjut/model"
@@ -70,13 +68,9 @@ func Update(c *gin.Context) {
 
 	// TODO 对于Email，telephone，password信息更新时做安全检查和身份认证
 
-	// 查找用户
-	session := sessions.Default(c)
-	uid := session.Get("user_id")
-	user := model.User{}
-	if err := database.DB.First(&user, uid).Error; err != nil {
-		logger.Error.Println("数据库查询失败", err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
+	user := CurrentUser(c)
+	if user == (model.User{}) {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "查询登录用户失败"})
 		return
 	}
 

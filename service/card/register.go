@@ -3,11 +3,11 @@ package card
 import (
 	"net/http"
 
-	"github.com/YahuiAn/Go-bjut/database"
-	"github.com/YahuiAn/Go-bjut/model"
-	"github.com/gin-contrib/sessions"
+	"github.com/YahuiAn/Go-bjut/service/user"
 
+	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/logger"
+	"github.com/YahuiAn/Go-bjut/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,14 +28,9 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// TODO 将获取当前用户的函数抽出来
-	// 查找登记者是谁
-	session := sessions.Default(c)
-	uid := session.Get("user_id")
-	user := model.User{}
-	if err := database.DB.First(&user, uid).Error; err != nil {
-		logger.Error.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
+	who := user.CurrentUser(c)
+	if who == (model.User{}) {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "查询登录用户失败"})
 		return
 	}
 
@@ -53,7 +48,7 @@ func Register(c *gin.Context) {
 	}
 
 	card := &model.Card{
-		Registrant: user.NickName,
+		Registrant: who.NickName,
 		RealName:   info.RealName,
 		Sex:        info.Sex,
 		College:    info.College,
