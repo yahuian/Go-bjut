@@ -9,7 +9,7 @@ import (
 
 type smsInfo struct {
 	ID         uint
-	StuNumber  string
+	Number     string
 	Telephone  string
 	Location   string
 	Registrant string
@@ -19,9 +19,9 @@ type smsInfo struct {
 func Notice() {
 	var info []smsInfo
 
-	err := database.DB.Table("students as s").
-		Select("c.id, s.stu_number, s.telephone, c.location, c.registrant").
-		Joins("join cards as c on s.stu_number = c.stu_number and c.status != ?", model.SuccessfulNotification).
+	err := database.DB.Table("users as u").
+		Select("c.id, u.number, u.telephone, c.location, c.registrant").
+		Joins("join cards as c on u.number = c.number and c.status != ?", model.SuccessfulNotification).
 		Scan(&info).Error
 
 	if err != nil {
@@ -37,7 +37,7 @@ func Notice() {
 			continue
 		}
 
-		if !sendMessage(info[i].Telephone, info[i].StuNumber, info[i].Location, info[i].Registrant) {
+		if !sendMessage(info[i].Telephone, info[i].Number, info[i].Location, info[i].Registrant) {
 			database.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.SmsAPIError)
 		} else {
 			database.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.SuccessfulNotification)

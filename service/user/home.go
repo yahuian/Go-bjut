@@ -1,4 +1,4 @@
-package student
+package user
 
 import (
 	"net/http"
@@ -23,23 +23,23 @@ type HomeInfo struct {
 	College   string
 	Major     string
 	ClassName string
-	StuNumber string
+	Number    string
 	RealName  string
 }
 
-// 学生主页
+// 用户主页
 func Home(c *gin.Context) {
 	session := sessions.Default(c)
 	uid := session.Get("user_id")
 
-	var student HomeInfo
+	var user HomeInfo
 
-	if err := database.DB.First(&model.Student{}, uid).Scan(&student).Error; err != nil {
+	if err := database.DB.First(&model.User{}, uid).Scan(&user).Error; err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"msg": student})
+	c.JSON(http.StatusOK, gin.H{"msg": user})
 	return
 }

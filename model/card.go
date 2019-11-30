@@ -8,7 +8,7 @@ type Card struct {
 	RealName   string
 	Sex        string
 	College    string
-	StuNumber  string
+	Number     string
 	Location   string
 	Status     string
 }

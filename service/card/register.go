@@ -12,11 +12,11 @@ import (
 )
 
 type cardInfo struct {
-	RealName  string `binding:"max=20"`
-	Sex       string // TODO 校验取值只能取male，female
-	College   string `binding:"max=20"`
-	StuNumber string `binding:"required,max=20"`
-	Location  string `binding:"required,max=50"`
+	RealName string `binding:"max=20"`
+	Sex      string // TODO 校验取值只能取male，female
+	College  string `binding:"max=20"`
+	Number   string `binding:"required,max=20"`
+	Location string `binding:"required,max=50"`
 }
 
 // 用户捡到一卡通后，登记相关信息，并入库
@@ -32,8 +32,8 @@ func Register(c *gin.Context) {
 	// 查找登记者是谁
 	session := sessions.Default(c)
 	uid := session.Get("user_id")
-	student := model.Student{}
-	if err := database.DB.First(&student, uid).Error; err != nil {
+	user := model.User{}
+	if err := database.DB.First(&user, uid).Error; err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
@@ -41,7 +41,7 @@ func Register(c *gin.Context) {
 
 	count := 0
 	err := database.DB.Model(&model.Card{}).
-		Where("stu_number = ? and status != ?", info.StuNumber, model.SuccessfulNotification).Count(&count).Error
+		Where("number = ? and status != ?", info.Number, model.SuccessfulNotification).Count(&count).Error
 	if err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -53,11 +53,11 @@ func Register(c *gin.Context) {
 	}
 
 	card := &model.Card{
-		Registrant: student.NickName,
+		Registrant: user.NickName,
 		RealName:   info.RealName,
 		Sex:        info.Sex,
 		College:    info.College,
-		StuNumber:  info.StuNumber,
+		Number:     info.Number,
 		Location:   info.Location,
 		Status:     model.WaitingNotification,
 	}

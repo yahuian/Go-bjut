@@ -1,4 +1,4 @@
-package student
+package user
 
 import (
 	"net/http"
@@ -25,7 +25,7 @@ type updateInfo struct {
 	College    string
 	Major      string
 	ClassName  string
-	StuNumber  string
+	Number     string
 	RealName   string
 }
 
@@ -45,7 +45,7 @@ func Update(c *gin.Context) {
 
 	if info.NickName != "" {
 		count := 0
-		err := database.DB.Model(&model.Student{}).Where("nick_name = ?", info.NickName).Count(&count).Error
+		err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 		if err != nil {
 			logger.Error.Println("数据库查询失败", err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -73,8 +73,8 @@ func Update(c *gin.Context) {
 	// 查找用户
 	session := sessions.Default(c)
 	uid := session.Get("user_id")
-	student := model.Student{}
-	if err := database.DB.First(&student, uid).Error; err != nil {
+	user := model.User{}
+	if err := database.DB.First(&user, uid).Error; err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
@@ -82,7 +82,7 @@ func Update(c *gin.Context) {
 
 	// Update multiple attributes with `struct`, will only update those changed & non blank fields
 	// 更新用户信息
-	if err := database.DB.Model(&student).Updates(info).Error; err != nil {
+	if err := database.DB.Model(&user).Updates(info).Error; err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "信息更新失败"})
 		return

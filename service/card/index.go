@@ -14,7 +14,7 @@ type cardDisplay struct {
 	RealName   string
 	Sex        string
 	College    string
-	StuNumber  string
+	Number     string
 	Location   string
 	Registrant string
 	CreatedAt  time.Time // TODO 返回前端可读性良好的时间格式

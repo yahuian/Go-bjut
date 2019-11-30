@@ -43,15 +43,15 @@ type outcome struct {
 }
 
 // 指定腾讯云模板单发短信
-// 本例模板内容：{stuNumber}，您的一卡通在{location}，好心人为{registrant}
-func sendMessage(telNumber, stuNumber, location, registrant string) bool {
+// 本例模板内容：{Number}，您的一卡通在{location}，好心人为{registrant}
+func sendMessage(telNumber, number, location, registrant string) bool {
 	// 构造url
 	sdkappid := viper.GetString("tencent.card_sms.sdkappid")
 	random := string(rand.Int())
 	url := "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=" + sdkappid + "&random=" + random
 
 	// 构造参数
-	params := []string{stuNumber, location, registrant}
+	params := []string{number, location, registrant}
 	appkey := viper.GetString("tencent.card_sms.appkey")
 	nowTime := time.Now().Unix()
 	sig := calculateSig(appkey, telNumber, random, nowTime)

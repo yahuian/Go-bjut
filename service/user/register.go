@@ -1,4 +1,4 @@
-package student
+package user
 
 import (
 	"net/http"
@@ -20,7 +20,7 @@ type RegisterInfo struct {
 	PwdConfirm string `binding:"required,min=8,max=40"`
 }
 
-// 学生注册
+// 用户注册
 func Register(c *gin.Context) {
 	var info RegisterInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
@@ -36,7 +36,7 @@ func Register(c *gin.Context) {
 	}
 
 	count := 0
-	err := database.DB.Model(&model.Student{}).Where("nick_name = ?", info.NickName).Count(&count).Error
+	err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 	if err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -55,15 +55,13 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	student := model.Student{
-		User: model.User{
-			NickName: info.NickName,
-			Password: string(bytesPwd),
-		},
+	user := model.User{
+		NickName: info.NickName,
+		Password: string(bytesPwd),
 	}
 
 	// 插入数据
-	err = database.DB.Create(&student).Error
+	err = database.DB.Create(&user).Error
 	if err != nil {
 		logger.Error.Println("注册失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})
@@ -71,7 +69,7 @@ func Register(c *gin.Context) {
 	}
 
 	logger.Info.Println("注册成功", info.NickName)
-	c.JSON(http.StatusOK, gin.H{"msg": "注册成功", "data": student.NickName})
+	c.JSON(http.StatusOK, gin.H{"msg": "注册成功", "data": user.NickName})
 }
 
 // TODO 增加通过微信注册的方式
