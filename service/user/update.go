@@ -15,16 +15,17 @@ import (
 
 // 可供用户更新的数据
 type updateInfo struct {
-	NickName   string `null,binding:"min=2,max=30"`
-	Password   string `null,binding:"min=8,max=40"`
-	PwdConfirm string `null,binding:"min=8,max=40"`
-	Email      string
-	Telephone  string
-	College    string
-	Major      string
-	ClassName  string
-	Number     string
-	RealName   string
+	NickName    string `null,binding:"min=2,max=30"`
+	Password    string `null,binding:"min=8,max=40"`
+	NewPassword string `null,binding:"min=8,max=40"`
+	PwdConfirm  string `null,binding:"min=8,max=40"`
+	Email       string
+	Telephone   string
+	College     string
+	Major       string
+	ClassName   string
+	Number      string
+	RealName    string
 }
 
 func Update(c *gin.Context) {
@@ -35,10 +36,37 @@ func Update(c *gin.Context) {
 		return
 	}
 
-	if info.Password != info.PwdConfirm {
-		logger.Error.Println("两次输入密码不一致")
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "两次输入密码不一致"})
+	user := CurrentUser(c)
+	if user == (model.User{}) {
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "当前用户查询失败"})
 		return
+	}
+
+	if info.Password != "" {
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(info.Password)); err != nil {
+			logger.Error.Println(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"msg": "原密码错误"})
+			return
+		}
+		if info.NewPassword == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": "新密码不可为空"})
+			return
+		}
+		if info.PwdConfirm == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": "确认密码不可为空"})
+			return
+		}
+		if info.NewPassword != info.PwdConfirm {
+			c.JSON(http.StatusBadRequest, gin.H{"msg": "新密码和确认密码不同"})
+			return
+		}
+		bytesPwd, err := bcrypt.GenerateFromPassword([]byte(info.NewPassword), 10)
+		if err != nil {
+			logger.Error.Println("密码加密失败", err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "密码加密失败"})
+			return
+		}
+		info.Password = string(bytesPwd)
 	}
 
 	if info.NickName != "" {
@@ -56,24 +84,7 @@ func Update(c *gin.Context) {
 		}
 	}
 
-	if info.Password != "" {
-		bytesPwd, err := bcrypt.GenerateFromPassword([]byte(info.Password), 10)
-		if err != nil {
-			logger.Error.Println("密码加密失败", err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "密码加密失败"})
-			return
-		}
-		info.Password = string(bytesPwd)
-	}
-
-	// TODO 对于Email，telephone，password信息更新时做安全检查和身份认证
-
-	user := CurrentUser(c)
-	if user == (model.User{}) {
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "查询登录用户失败"})
-		return
-	}
-
+	// TODO 对于Email，telephone信息更新时做安全检查和身份认证
 	// Update multiple attributes with `struct`, will only update those changed & non blank fields
 	// 更新用户信息
 	if err := database.DB.Model(&user).Updates(info).Error; err != nil {
