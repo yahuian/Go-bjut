@@ -36,7 +36,7 @@ func Index(c *gin.Context) {
 
 	offset := (pageIndex - 1) * pageSize
 	var cards []cardDisplay
-	if err := database.DB.Table("cards").Offset(offset).Limit(pageSize).Scan(&cards).Error; err != nil {
+	if err := database.DB.Table("cards").Offset(offset).Limit(pageSize).Order("created_at desc").Scan(&cards).Error; err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
