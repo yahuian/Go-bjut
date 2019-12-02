@@ -56,7 +56,7 @@ func BjutRegister(c *gin.Context) {
 	// 注册时，用StuNumber作为NickName
 	// 检查是否已经注册
 	count := 0
-	err := database.DB.Model(&model.User{}).Where("nick_name = ?", loginInfo.Number).Count(&count).Error
+	err := database.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
 	if err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
