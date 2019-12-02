@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 
+	"github.com/YahuiAn/Go-bjut/service/card"
+
 	"github.com/YahuiAn/Go-bjut/config"
 	"github.com/YahuiAn/Go-bjut/router"
+	"github.com/robfig/cron"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
@@ -16,6 +19,15 @@ func main() {
 
 	// 加载路由
 	r := router.NewRouter()
+
+	// 启动定时任务
+	smsTime := viper.GetString("cron.sms")
+	spec := "@every " + smsTime
+	c := cron.New()
+	if err := c.AddFunc(spec, card.Notice); err != nil {
+		panic(err.Error())
+	}
+	c.Start()
 
 	// 启动项目
 	addr := viper.GetString("gin.address")

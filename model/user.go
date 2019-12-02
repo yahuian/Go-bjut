@@ -8,13 +8,9 @@ type User struct {
 	Password  string
 	Email     string
 	Telephone string
-}
-
-type Student struct {
-	User
 	College   string
 	Major     string
 	ClassName string
-	StuNumber string
+	Number    string `gorm:"unique"` // 学号或职工号
 	RealName  string
 }

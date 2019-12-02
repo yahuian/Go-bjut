@@ -1,4 +1,4 @@
-package student
+package user
 
 import (
 	"encoding/json"
@@ -35,14 +35,14 @@ type baseInfo struct {
 	College   string `json:"college"`
 	Major     string `json:"major"`
 	ClassName string `json:"class"`
-	StuNumber string `json:"stuNum"`
+	Number    string `json:"stuNum"`
 	RealName  string `json:"sutName"` // sutName这个锅该小美API来背
 }
 
 // 登录bjut正方教务系统所需信息
 type stuInfo struct {
-	StuNumber string `json:"xh"` // xh表示学号
-	Password  string `json:"mm"` // mm表示密码（ps: 该命名来源于正方教务系统）
+	Number   string
+	Password string
 }
 
 func BjutRegister(c *gin.Context) {
@@ -56,7 +56,7 @@ func BjutRegister(c *gin.Context) {
 	// 注册时，用StuNumber作为NickName
 	// 检查是否已经注册
 	count := 0
-	err := database.DB.Model(&model.Student{}).Where("nick_name = ?", loginInfo.StuNumber).Count(&count).Error
+	err := database.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
 	if err != nil {
 		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -69,13 +69,14 @@ func BjutRegister(c *gin.Context) {
 	}
 
 	// 向小美API发起HTTP POST请求
-	data := url.Values{"xh": {loginInfo.StuNumber}, "mm": {loginInfo.Password}}
+	data := url.Values{"xh": {loginInfo.Number}, "mm": {loginInfo.Password}}
 	resp, err := http.PostForm(baseInfoAPI, data)
 	if err != nil {
 		logger.Error.Printf("%s请求失败,%s\n", baseInfoAPI, err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": baseInfoAPI + "接口请求失败"})
 		return
 	}
+	defer resp.Body.Close()
 	if resp.Status != "200 OK" {
 		logger.Error.Printf(resp.Status)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "请检查教务账号密码是否有误"})
@@ -104,26 +105,24 @@ func BjutRegister(c *gin.Context) {
 		return
 	}
 
-	student := model.Student{
-		User: model.User{
-			NickName: info.StuNumber,
-			Password: string(bytesPwd),
-		},
+	user := model.User{
+		NickName:  info.Number,
+		Password:  string(bytesPwd),
 		College:   info.College,
 		Major:     info.Major,
 		ClassName: info.ClassName,
-		StuNumber: info.StuNumber,
+		Number:    info.Number,
 		RealName:  info.RealName,
 	}
 
 	// 插入数据
-	err = database.DB.Create(&student).Error
+	err = database.DB.Create(&user).Error
 	if err != nil {
 		logger.Error.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})
 		return
 	}
 
-	logger.Info.Println("注册成功", info.StuNumber)
-	c.JSON(http.StatusOK, gin.H{"msg": "注册成功", "data": info.StuNumber})
+	logger.Info.Println("注册成功", info.Number)
+	c.JSON(http.StatusOK, gin.H{"msg": "注册成功", "data": info.Number})
 }
