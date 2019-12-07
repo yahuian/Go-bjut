@@ -17,7 +17,7 @@ import (
 type RegisterInfo struct {
 	NickName   string `binding:"required,min=2,max=30"`
 	Password   string `binding:"required,min=8,max=40"`
-	PwdConfirm string `binding:"required,min=8,max=40"`
+	PwdConfirm string `binding:"eqfield=Password"`
 }
 
 // 用户注册
@@ -26,12 +26,6 @@ func Register(c *gin.Context) {
 	if err := c.ShouldBindJSON(&info); err != nil {
 		logger.Error.Println("json信息错误", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
-		return
-	}
-
-	if info.Password != info.PwdConfirm {
-		logger.Error.Println("两次输入密码不一致")
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "两次输入密码不一致"})
 		return
 	}
 

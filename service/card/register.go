@@ -13,7 +13,7 @@ import (
 
 type cardInfo struct {
 	RealName string `binding:"max=20"`
-	Sex      string // TODO 校验取值只能取male，female
+	Sex      string `binding:"omitempty,oneof=male female secrecy"`
 	College  string `binding:"max=20"`
 	Number   string `binding:"required,max=20"`
 	Location string `binding:"required,max=50"`

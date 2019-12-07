@@ -15,10 +15,10 @@ import (
 
 // 可供用户更新的数据
 type updateInfo struct {
-	NickName    string `null,binding:"min=2,max=30"`
-	Password    string `null,binding:"min=8,max=40"`
-	NewPassword string `null,binding:"min=8,max=40"`
-	PwdConfirm  string `null,binding:"min=8,max=40"`
+	NickName    string `binding:"omitempty,min=2,max=30"`
+	Password    string `binding:"omitempty,min=8,max=40"`
+	NewPassword string `binding:"required_with=Password,omitempty,min=8,max=40"`
+	PwdConfirm  string `binding:"eqfield=NewPassword"`
 	Email       string
 	Telephone   string
 	College     string
@@ -48,18 +48,7 @@ func Update(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"msg": "原密码错误"})
 			return
 		}
-		if info.NewPassword == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "新密码不可为空"})
-			return
-		}
-		if info.PwdConfirm == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "确认密码不可为空"})
-			return
-		}
-		if info.NewPassword != info.PwdConfirm {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "新密码和确认密码不同"})
-			return
-		}
+
 		bytesPwd, err := bcrypt.GenerateFromPassword([]byte(info.NewPassword), 10)
 		if err != nil {
 			logger.Error.Println("密码加密失败", err.Error())
