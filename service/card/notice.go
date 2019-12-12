@@ -25,7 +25,7 @@ func Notice() {
 		Scan(&info).Error
 
 	if err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		return
 	}
 

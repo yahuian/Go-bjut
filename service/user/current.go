@@ -14,7 +14,7 @@ func CurrentUser(c *gin.Context) model.User {
 	uid := session.Get("user_id")
 	var user model.User
 	if err := database.DB.First(&user, uid).Error; err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 	}
 	return user
 }

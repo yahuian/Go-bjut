@@ -78,14 +78,14 @@ func sendMessage(telNumber, number, location, registrant string) bool {
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		return false
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		return false
 	}
 

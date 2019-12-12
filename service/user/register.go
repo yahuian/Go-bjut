@@ -24,7 +24,7 @@ type RegisterInfo struct {
 func Register(c *gin.Context) {
 	var info RegisterInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		logger.Error.Println("json信息错误", err.Error())
+		logger.Error.Println("json信息错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
 		return
 	}
@@ -32,7 +32,7 @@ func Register(c *gin.Context) {
 	count := 0
 	err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 	if err != nil {
-		logger.Error.Println("数据库查询失败", err.Error())
+		logger.Error.Println("数据库查询失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
@@ -44,7 +44,7 @@ func Register(c *gin.Context) {
 
 	bytesPwd, err := bcrypt.GenerateFromPassword([]byte(info.Password), 10)
 	if err != nil {
-		logger.Error.Println("密码加密失败", err.Error())
+		logger.Error.Println("密码加密失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "密码加密失败"})
 		return
 	}
@@ -57,7 +57,7 @@ func Register(c *gin.Context) {
 	// 插入数据
 	err = database.DB.Create(&user).Error
 	if err != nil {
-		logger.Error.Println("注册失败", err.Error())
+		logger.Error.Println("注册失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})
 		return
 	}

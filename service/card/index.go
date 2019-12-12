@@ -24,7 +24,7 @@ type cardDisplay struct {
 func Index(c *gin.Context) {
 	pageIndex, err := strconv.Atoi(c.Query("page")) // 页号
 	if err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "不合法的页数"})
 		return
 	}
@@ -37,14 +37,14 @@ func Index(c *gin.Context) {
 	offset := (pageIndex - 1) * pageSize
 	var cards []cardDisplay
 	if err := database.DB.Table("cards").Offset(offset).Limit(pageSize).Order("created_at desc").Scan(&cards).Error; err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
 
 	var rows int // 表的总行数
 	if err := database.DB.Table("cards").Count(&rows).Error; err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}

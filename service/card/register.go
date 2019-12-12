@@ -23,7 +23,7 @@ type cardInfo struct {
 func Register(c *gin.Context) {
 	var info cardInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		logger.Error.Println("json信息错误", err.Error())
+		logger.Error.Println("json信息错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
 		return
 	}
@@ -38,7 +38,7 @@ func Register(c *gin.Context) {
 	err := database.DB.Model(&model.Card{}).
 		Where("number = ? and status != ?", info.Number, model.SuccessfulNotification).Count(&count).Error
 	if err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
@@ -58,7 +58,7 @@ func Register(c *gin.Context) {
 	}
 
 	if err := database.DB.Create(&card).Error; err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "登记失败"})
 		return
 	}

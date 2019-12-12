@@ -25,7 +25,7 @@ func main() {
 	spec := "@every " + smsTime
 	c := cron.New()
 	if err := c.AddFunc(spec, card.Notice); err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 	c.Start()
 

@@ -31,7 +31,7 @@ type updateInfo struct {
 func Update(c *gin.Context) {
 	var info updateInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		logger.Error.Println("json信息错误", err.Error())
+		logger.Error.Println("json信息错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
 		return
 	}
@@ -44,14 +44,14 @@ func Update(c *gin.Context) {
 
 	if info.Password != "" {
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(info.Password)); err != nil {
-			logger.Error.Println(err.Error())
+			logger.Error.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{"msg": "原密码错误"})
 			return
 		}
 
 		bytesPwd, err := bcrypt.GenerateFromPassword([]byte(info.NewPassword), 10)
 		if err != nil {
-			logger.Error.Println("密码加密失败", err.Error())
+			logger.Error.Println("密码加密失败", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "密码加密失败"})
 			return
 		}
@@ -62,7 +62,7 @@ func Update(c *gin.Context) {
 		count := 0
 		err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 		if err != nil {
-			logger.Error.Println("数据库查询失败", err.Error())
+			logger.Error.Println("数据库查询失败", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 			return
 		}
@@ -77,7 +77,7 @@ func Update(c *gin.Context) {
 	// Update multiple attributes with `struct`, will only update those changed & non blank fields
 	// 更新用户信息
 	if err := database.DB.Model(&user).Updates(info).Error; err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "信息更新失败"})
 		return
 	}
