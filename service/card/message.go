@@ -47,7 +47,8 @@ type outcome struct {
 func sendMessage(telNumber, number, location, registrant string) bool {
 	// 构造url
 	sdkappid := viper.GetString("tencent.card_sms.sdkappid")
-	random := string(rand.Int())
+	rand.Seed(time.Now().Unix())
+	random := strconv.Itoa(rand.Int())[0:5]
 	url := "https://yun.tim.qq.com/v5/tlssmssvr/sendsms?sdkappid=" + sdkappid + "&random=" + random
 
 	// 构造参数
@@ -89,7 +90,10 @@ func sendMessage(telNumber, number, location, registrant string) bool {
 	}
 
 	var res outcome
-	_ = json.Unmarshal(body, &res)
+	if err := json.Unmarshal(body, &res); err != nil {
+		logger.Error.Printf("sms return body err,%s.\n", err)
+		return false
+	}
 
 	if res.Result != 0 {
 		logger.Error.Println(res)
