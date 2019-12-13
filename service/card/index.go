@@ -5,7 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/YahuiAn/Go-bjut/database"
+	"github.com/YahuiAn/Go-bjut/model"
+
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -36,14 +37,14 @@ func Index(c *gin.Context) {
 
 	offset := (pageIndex - 1) * pageSize
 	var cards []cardDisplay
-	if err := database.DB.Table("cards").Offset(offset).Limit(pageSize).Order("created_at desc").Scan(&cards).Error; err != nil {
+	if err := model.DB.Table("cards").Offset(offset).Limit(pageSize).Order("created_at desc").Scan(&cards).Error; err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
 
 	var rows int // 表的总行数
-	if err := database.DB.Table("cards").Count(&rows).Error; err != nil {
+	if err := model.DB.Table("cards").Count(&rows).Error; err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return

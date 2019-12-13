@@ -6,7 +6,6 @@ import (
 
 	"github.com/YahuiAn/Go-bjut/model"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-contrib/sessions"
 
@@ -34,7 +33,7 @@ func Home(c *gin.Context) {
 
 	var user HomeInfo
 
-	if err := database.DB.First(&model.User{}, uid).Scan(&user).Error; err != nil {
+	if err := model.DB.First(&model.User{}, uid).Scan(&user).Error; err != nil {
 		logger.Error.Println("数据库查询失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return

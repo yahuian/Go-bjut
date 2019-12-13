@@ -7,7 +7,6 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/model"
 
 	"github.com/YahuiAn/Go-bjut/logger"
@@ -29,7 +28,7 @@ func Login(c *gin.Context) {
 	}
 
 	user := model.User{}
-	if err := database.DB.Where("nick_name = ?", info.Nickname).First(&user).Error; err != nil {
+	if err := model.DB.Where("nick_name = ?", info.Nickname).First(&user).Error; err != nil {
 		logger.Error.Println("用户名错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "用户名错误"})
 		return

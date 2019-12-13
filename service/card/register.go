@@ -5,7 +5,6 @@ import (
 
 	"github.com/YahuiAn/Go-bjut/service/user"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/YahuiAn/Go-bjut/model"
 	"github.com/gin-gonic/gin"
@@ -35,7 +34,7 @@ func Register(c *gin.Context) {
 	}
 
 	count := 0
-	err := database.DB.Model(&model.Card{}).
+	err := model.DB.Model(&model.Card{}).
 		Where("number = ? and status != ?", info.Number, model.SuccessfulNotification).Count(&count).Error
 	if err != nil {
 		logger.Error.Println(err)
@@ -57,7 +56,7 @@ func Register(c *gin.Context) {
 		Status:     model.WaitingNotification,
 	}
 
-	if err := database.DB.Create(&card).Error; err != nil {
+	if err := model.DB.Create(&card).Error; err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "登记失败"})
 		return

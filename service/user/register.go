@@ -9,8 +9,6 @@ import (
 
 	"github.com/YahuiAn/Go-bjut/model"
 
-	"github.com/YahuiAn/Go-bjut/database"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +28,7 @@ func Register(c *gin.Context) {
 	}
 
 	count := 0
-	err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
+	err := model.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 	if err != nil {
 		logger.Error.Println("数据库查询失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -55,7 +53,7 @@ func Register(c *gin.Context) {
 	}
 
 	// 插入数据
-	err = database.DB.Create(&user).Error
+	err = model.DB.Create(&user).Error
 	if err != nil {
 		logger.Error.Println("注册失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})

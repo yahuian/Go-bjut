@@ -3,7 +3,6 @@ package card
 import (
 	"github.com/YahuiAn/Go-bjut/model"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/logger"
 )
 
@@ -19,7 +18,7 @@ type smsInfo struct {
 func Notice() {
 	var info []smsInfo
 
-	err := database.DB.Table("users as u").
+	err := model.DB.Table("users as u").
 		Select("c.id, u.number, u.telephone, c.location, c.registrant").
 		Joins("join cards as c on u.number = c.number and c.status != ?", model.SuccessfulNotification).
 		Scan(&info).Error
@@ -33,14 +32,14 @@ func Notice() {
 		var temp model.Card
 
 		if info[i].Telephone == "" {
-			database.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.UnboundPhone)
+			model.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.UnboundPhone)
 			continue
 		}
 
 		if !sendMessage(info[i].Telephone, info[i].Number, info[i].Location, info[i].Registrant) {
-			database.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.SmsAPIError)
+			model.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.SmsAPIError)
 		} else {
-			database.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.SuccessfulNotification)
+			model.DB.Table("cards").First(&temp, info[i].ID).Update("status", model.SuccessfulNotification)
 		}
 	}
 }

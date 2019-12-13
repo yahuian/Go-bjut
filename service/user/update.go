@@ -7,8 +7,6 @@ import (
 
 	"github.com/YahuiAn/Go-bjut/model"
 
-	"github.com/YahuiAn/Go-bjut/database"
-
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -60,7 +58,7 @@ func Update(c *gin.Context) {
 
 	if info.NickName != "" {
 		count := 0
-		err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
+		err := model.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 		if err != nil {
 			logger.Error.Println("数据库查询失败", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -76,7 +74,7 @@ func Update(c *gin.Context) {
 	// TODO 对于Email，telephone信息更新时做安全检查和身份认证
 	// Update multiple attributes with `struct`, will only update those changed & non blank fields
 	// 更新用户信息
-	if err := database.DB.Model(&user).Updates(info).Error; err != nil {
+	if err := model.DB.Model(&user).Updates(info).Error; err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "信息更新失败"})
 		return

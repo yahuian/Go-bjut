@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/model"
 	"golang.org/x/crypto/bcrypt"
 
@@ -56,7 +55,7 @@ func BjutRegister(c *gin.Context) {
 	// 注册时，用StuNumber作为NickName
 	// 检查是否已经注册
 	count := 0
-	err := database.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
+	err := model.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
 	if err != nil {
 		logger.Error.Println("数据库查询失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
@@ -116,7 +115,7 @@ func BjutRegister(c *gin.Context) {
 	}
 
 	// 插入数据
-	err = database.DB.Create(&user).Error
+	err = model.DB.Create(&user).Error
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})
