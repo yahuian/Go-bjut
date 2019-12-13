@@ -11,6 +11,6 @@ type User struct {
 	College   string
 	Major     string
 	ClassName string
-	Number    string `gorm:"unique"` // 学号或职工号
+	Number    *string `gorm:"unique"` // 学号或职工号
 	RealName  string
 }

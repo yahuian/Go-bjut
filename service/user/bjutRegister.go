@@ -40,7 +40,7 @@ type baseInfo struct {
 
 // 登录bjut正方教务系统所需信息
 type stuInfo struct {
-	Number   string
+	Number   string // TODO required tag
 	Password string
 }
 
@@ -52,7 +52,7 @@ func BjutRegister(c *gin.Context) {
 		return
 	}
 
-	// 注册时，用StuNumber作为NickName
+	// 注册时，用StuNumber作为NickName TODO 不能用number作为nickname
 	// 检查是否已经注册
 	count := 0
 	err := model.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
@@ -110,7 +110,7 @@ func BjutRegister(c *gin.Context) {
 		College:   info.College,
 		Major:     info.Major,
 		ClassName: info.ClassName,
-		Number:    info.Number,
+		Number:    &info.Number,
 		RealName:  info.RealName,
 	}
 
