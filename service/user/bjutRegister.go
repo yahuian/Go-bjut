@@ -40,8 +40,8 @@ type baseInfo struct {
 
 // 登录bjut正方教务系统所需信息
 type stuInfo struct {
-	Number   string // TODO required tag
-	Password string
+	Number   string `binding:"required,max=20"`
+	Password string `binding:"required"`
 }
 
 func BjutRegister(c *gin.Context) {
