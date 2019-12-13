@@ -27,15 +27,13 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	count := 0
-	err := model.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
+	// 检查是否已经注册
+	exist, err := model.ExistUserByUniqueField("nick_name", info.NickName)
 	if err != nil {
-		logger.Error.Println("数据库查询失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
-	if count > 0 {
-		logger.Error.Println("该昵称已被占用")
+	if exist {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "该昵称已被占用"})
 		return
 	}

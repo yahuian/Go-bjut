@@ -52,17 +52,13 @@ func BjutRegister(c *gin.Context) {
 		return
 	}
 
-	// 注册时，用StuNumber作为NickName TODO 不能用number作为nickname
 	// 检查是否已经注册
-	count := 0
-	err := model.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
+	exist, err := model.ExistUserByUniqueField("number", loginInfo.Number)
 	if err != nil {
-		logger.Error.Println("数据库查询失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
-	if count > 0 {
-		logger.Error.Println("该学号已经被注册")
+	if exist {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "该学号已经被注册"})
 		return
 	}
