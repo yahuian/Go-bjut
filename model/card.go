@@ -8,7 +8,7 @@ type Card struct {
 	RealName   string
 	Sex        string
 	College    string
-	Number     string
+	Number     string `gorm:"unique_index;not null"`
 	Location   string
 	Status     string
 }
