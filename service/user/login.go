@@ -7,7 +7,6 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/model"
 
 	"github.com/YahuiAn/Go-bjut/logger"
@@ -23,20 +22,20 @@ type LoginInfo struct {
 func Login(c *gin.Context) {
 	var info LoginInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		logger.Error.Println("json信息错误", err.Error())
+		logger.Error.Println("json信息错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
 		return
 	}
 
 	user := model.User{}
-	if err := database.DB.Where("nick_name = ?", info.Nickname).First(&user).Error; err != nil {
-		logger.Error.Println("用户名错误", err.Error())
+	if err := model.DB.Where("nick_name = ?", info.Nickname).First(&user).Error; err != nil {
+		logger.Error.Println("用户名错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "用户名错误"})
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(info.Password)); err != nil {
-		logger.Error.Println("密码错误", err.Error())
+		logger.Error.Println("密码错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "密码错误"})
 		return
 	}
@@ -46,7 +45,7 @@ func Login(c *gin.Context) {
 	s.Clear()
 	s.Set("user_id", user.ID)
 	if err := s.Save(); err != nil {
-		logger.Error.Println("session设置错误", err.Error())
+		logger.Error.Println("session设置错误", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "session设置错误"})
 		return
 	}

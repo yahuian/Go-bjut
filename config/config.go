@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/YahuiAn/Go-bjut/database"
+	"github.com/YahuiAn/Go-bjut/model"
 
 	"github.com/spf13/viper"
 )
@@ -29,7 +29,7 @@ func Init() {
 	db := viper.GetString("mysql.database")
 	// "${user}:${pwd}@tcp(${addr}:${port})/${db}?charset=utf8&parseTime=True&loc=Local"
 	connectStr := user + ":" + pwd + "@tcp(" + addr + ":" + port + ")/" + db + "?charset=utf8&parseTime=True&loc=Local"
-	if err := database.ConnectMysql(connectStr); err != nil {
+	if err := model.ConnectMysql(connectStr); err != nil {
 		panic(err)
 	}
 }

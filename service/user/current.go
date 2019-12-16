@@ -1,7 +1,6 @@
 package user
 
 import (
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/YahuiAn/Go-bjut/model"
 	"github.com/gin-contrib/sessions"
@@ -13,8 +12,8 @@ func CurrentUser(c *gin.Context) model.User {
 	session := sessions.Default(c)
 	uid := session.Get("user_id")
 	var user model.User
-	if err := database.DB.First(&user, uid).Error; err != nil {
-		logger.Error.Println(err.Error())
+	if err := model.DB.First(&user, uid).Error; err != nil {
+		logger.Error.Println(err)
 	}
 	return user
 }

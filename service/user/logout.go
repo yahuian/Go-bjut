@@ -12,7 +12,7 @@ func Logout(c *gin.Context) {
 	s := sessions.Default(c)
 	s.Clear()
 	if err := s.Save(); err != nil {
-		logger.Error.Println("session设置错误", err.Error())
+		logger.Error.Println("session设置错误", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "session设置错误"})
 		return
 	}

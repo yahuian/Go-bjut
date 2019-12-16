@@ -18,3 +18,14 @@
 - bjutRegister通过学号来判断是否重复注册
 ### security
 - 修改密码时需要输入原密码
+## v0.2.1 2019-12-16
+### added
+- unique 字段显示的创建索引
+### changed
+- gin v1.4.0 -> v1.5.0
+- 数据校验充分利用 validator tag
+- database合入model包中
+- 删除多余的err.error()
+### fixed
+- sms请求url中random参数
+- sms返回值序列化的错误处理

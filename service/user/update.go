@@ -7,18 +7,16 @@ import (
 
 	"github.com/YahuiAn/Go-bjut/model"
 
-	"github.com/YahuiAn/Go-bjut/database"
-
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-gonic/gin"
 )
 
 // 可供用户更新的数据
 type updateInfo struct {
-	NickName    string `null,binding:"min=2,max=30"`
-	Password    string `null,binding:"min=8,max=40"`
-	NewPassword string `null,binding:"min=8,max=40"`
-	PwdConfirm  string `null,binding:"min=8,max=40"`
+	NickName    string `binding:"omitempty,min=2,max=30"`
+	Password    string `binding:"omitempty,min=8,max=40"`
+	NewPassword string `binding:"required_with=Password,omitempty,min=8,max=40"`
+	PwdConfirm  string `binding:"eqfield=NewPassword"`
 	Email       string
 	Telephone   string
 	College     string
@@ -31,7 +29,7 @@ type updateInfo struct {
 func Update(c *gin.Context) {
 	var info updateInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		logger.Error.Println("json信息错误", err.Error())
+		logger.Error.Println("json信息错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
 		return
 	}
@@ -44,25 +42,14 @@ func Update(c *gin.Context) {
 
 	if info.Password != "" {
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(info.Password)); err != nil {
-			logger.Error.Println(err.Error())
+			logger.Error.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{"msg": "原密码错误"})
 			return
 		}
-		if info.NewPassword == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "新密码不可为空"})
-			return
-		}
-		if info.PwdConfirm == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "确认密码不可为空"})
-			return
-		}
-		if info.NewPassword != info.PwdConfirm {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "新密码和确认密码不同"})
-			return
-		}
+
 		bytesPwd, err := bcrypt.GenerateFromPassword([]byte(info.NewPassword), 10)
 		if err != nil {
-			logger.Error.Println("密码加密失败", err.Error())
+			logger.Error.Println("密码加密失败", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "密码加密失败"})
 			return
 		}
@@ -71,9 +58,9 @@ func Update(c *gin.Context) {
 
 	if info.NickName != "" {
 		count := 0
-		err := database.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
+		err := model.DB.Model(&model.User{}).Where("nick_name = ?", info.NickName).Count(&count).Error
 		if err != nil {
-			logger.Error.Println("数据库查询失败", err.Error())
+			logger.Error.Println("数据库查询失败", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 			return
 		}
@@ -87,8 +74,8 @@ func Update(c *gin.Context) {
 	// TODO 对于Email，telephone信息更新时做安全检查和身份认证
 	// Update multiple attributes with `struct`, will only update those changed & non blank fields
 	// 更新用户信息
-	if err := database.DB.Model(&user).Updates(info).Error; err != nil {
-		logger.Error.Println(err.Error())
+	if err := model.DB.Model(&user).Updates(info).Error; err != nil {
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "信息更新失败"})
 		return
 	}

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/YahuiAn/Go-bjut/database"
 	"github.com/YahuiAn/Go-bjut/model"
 	"golang.org/x/crypto/bcrypt"
 
@@ -41,29 +40,25 @@ type baseInfo struct {
 
 // 登录bjut正方教务系统所需信息
 type stuInfo struct {
-	Number   string
-	Password string
+	Number   string `binding:"required,max=20"`
+	Password string `binding:"required"`
 }
 
 func BjutRegister(c *gin.Context) {
 	var loginInfo stuInfo
 	if err := c.ShouldBindJSON(&loginInfo); err != nil {
-		logger.Error.Println("json信息错误", err.Error())
+		logger.Error.Println("json信息错误", err)
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
 		return
 	}
 
-	// 注册时，用StuNumber作为NickName
 	// 检查是否已经注册
-	count := 0
-	err := database.DB.Model(&model.User{}).Where("number = ?", loginInfo.Number).Count(&count).Error
+	exist, err := model.ExistUserByUniqueField("number", loginInfo.Number)
 	if err != nil {
-		logger.Error.Println("数据库查询失败", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		return
 	}
-	if count > 0 {
-		logger.Error.Println("该学号已经被注册")
+	if exist {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "该学号已经被注册"})
 		return
 	}
@@ -72,7 +67,7 @@ func BjutRegister(c *gin.Context) {
 	data := url.Values{"xh": {loginInfo.Number}, "mm": {loginInfo.Password}}
 	resp, err := http.PostForm(baseInfoAPI, data)
 	if err != nil {
-		logger.Error.Printf("%s请求失败,%s\n", baseInfoAPI, err.Error())
+		logger.Error.Printf("%s请求失败,%s\n", baseInfoAPI, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": baseInfoAPI + "接口请求失败"})
 		return
 	}
@@ -84,7 +79,7 @@ func BjutRegister(c *gin.Context) {
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Error.Printf(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": baseInfoAPI + "接口请求失败"})
 		return
 	}
@@ -92,7 +87,7 @@ func BjutRegister(c *gin.Context) {
 	// 序列化数据
 	var info baseInfo
 	if err := json.Unmarshal(body, &info); err != nil {
-		logger.Error.Printf(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": baseInfoAPI + "接口返回数据格式错误"})
 		return
 	}
@@ -100,7 +95,7 @@ func BjutRegister(c *gin.Context) {
 	// 使用教务管理系统的密码作为用户密码
 	bytesPwd, err := bcrypt.GenerateFromPassword([]byte(loginInfo.Password), 10)
 	if err != nil {
-		logger.Error.Println("密码加密失败", err.Error())
+		logger.Error.Println("密码加密失败", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "密码加密失败"})
 		return
 	}
@@ -111,14 +106,14 @@ func BjutRegister(c *gin.Context) {
 		College:   info.College,
 		Major:     info.Major,
 		ClassName: info.ClassName,
-		Number:    info.Number,
+		Number:    &info.Number,
 		RealName:  info.RealName,
 	}
 
 	// 插入数据
-	err = database.DB.Create(&user).Error
+	err = model.DB.Create(&user).Error
 	if err != nil {
-		logger.Error.Println(err.Error())
+		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "注册失败"})
 		return
 	}
