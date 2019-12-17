@@ -36,6 +36,8 @@ func ConnectMysql(connString string) error {
 	// 自动迁移表结构
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Card{})
+	DB.AutoMigrate(&Dynamic{})
+	DB.AutoMigrate(&Comment{})
 
 	return nil
 }

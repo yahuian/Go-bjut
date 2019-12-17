@@ -4,6 +4,8 @@ import (
 	"github.com/YahuiAn/Go-bjut/middleware"
 	"github.com/YahuiAn/Go-bjut/service"
 	"github.com/YahuiAn/Go-bjut/service/card"
+	"github.com/YahuiAn/Go-bjut/service/forum/comment"
+	"github.com/YahuiAn/Go-bjut/service/forum/dynamic"
 	"github.com/YahuiAn/Go-bjut/service/user"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -39,6 +41,9 @@ func NewRouter() *gin.Engine {
 			auth.DELETE("user/logout", user.Logout)
 
 			auth.POST("card/register", card.Register)
+
+			auth.POST("dynamic/create", dynamic.Create)
+			auth.POST("comment/create", comment.Create)
 		}
 
 	}
