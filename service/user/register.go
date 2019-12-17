@@ -22,10 +22,9 @@ type RegisterInfo struct {
 func Register(c *gin.Context) {
 	var info RegisterInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		logger.Error.Println("json信息错误", err)
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "json信息错误"}) // TODO 具体化错误信息
+		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
-	}
+	} // TODO c.shouldBindJson() https://github.com/gin-gonic/gin/issues/2167 返回用户友好的错误信息
 
 	// 检查是否已经注册
 	exist, err := model.ExistUserByUniqueField("nick_name", info.NickName)
