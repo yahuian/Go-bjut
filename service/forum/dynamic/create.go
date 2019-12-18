@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/YahuiAn/Go-bjut/logger"
+	"github.com/YahuiAn/Go-bjut/tip"
 
 	"github.com/YahuiAn/Go-bjut/model"
 	"github.com/YahuiAn/Go-bjut/service/user"
@@ -19,7 +20,7 @@ type dynamicInfo struct {
 func Create(c *gin.Context) {
 	var info dynamicInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
 		return
 	}
 

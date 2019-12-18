@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/YahuiAn/Go-bjut/model"
+	"github.com/YahuiAn/Go-bjut/tip"
 
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,7 @@ type updateInfo struct {
 func Update(c *gin.Context) {
 	var info updateInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
 		return
 	}
 

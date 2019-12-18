@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/YahuiAn/Go-bjut/tip"
+
 	"github.com/YahuiAn/Go-bjut/service/card"
 
 	"github.com/YahuiAn/Go-bjut/config"
@@ -19,6 +21,11 @@ func main() {
 
 	// 加载路由
 	r := router.NewRouter()
+
+	// 初始化翻译器
+	if err := tip.InitTranslator(); err != nil {
+		panic(err)
+	}
 
 	// 启动定时任务
 	smsTime := viper.GetString("cron.sms")

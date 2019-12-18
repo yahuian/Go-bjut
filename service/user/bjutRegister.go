@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/YahuiAn/Go-bjut/model"
+	"github.com/YahuiAn/Go-bjut/tip"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/YahuiAn/Go-bjut/logger"
@@ -47,7 +48,7 @@ type stuInfo struct {
 func BjutRegister(c *gin.Context) {
 	var loginInfo stuInfo
 	if err := c.ShouldBindJSON(&loginInfo); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
 		return
 	}
 

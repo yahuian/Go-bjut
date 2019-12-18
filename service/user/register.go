@@ -3,6 +3,8 @@ package user
 import (
 	"net/http"
 
+	"github.com/YahuiAn/Go-bjut/tip"
+
 	"github.com/YahuiAn/Go-bjut/logger"
 
 	"golang.org/x/crypto/bcrypt"
@@ -22,9 +24,9 @@ type RegisterInfo struct {
 func Register(c *gin.Context) {
 	var info RegisterInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
 		return
-	} // TODO c.shouldBindJson() https://github.com/gin-gonic/gin/issues/2167 返回用户友好的错误信息
+	}
 
 	// 检查是否已经注册
 	exist, err := model.ExistUserByUniqueField("nick_name", info.NickName)

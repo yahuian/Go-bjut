@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/YahuiAn/Go-bjut/service/user"
+	"github.com/YahuiAn/Go-bjut/tip"
 
 	"github.com/YahuiAn/Go-bjut/logger"
 
@@ -23,7 +24,7 @@ type commentInfo struct {
 func Create(c *gin.Context) {
 	var info commentInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
 		return
 	}
 
