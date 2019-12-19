@@ -30,6 +30,7 @@ func GetDynamicById(c *gin.Context) {
 	var dynamic model.Dynamic
 	dynamic, err = model.GetDynamicByID(uint(id))
 	if err != nil {
+		// gorm在查询单条数据时，如果数据库中不存在该数据，会返回gorm.ErrRecordNotFound的错
 		if err != gorm.ErrRecordNotFound {
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
 		} else {
