@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/YahuiAn/Go-bjut/tip"
+	"github.com/YahuiAn/Go-bjut/pkg"
 
 	"github.com/YahuiAn/Go-bjut/service/card"
 
@@ -23,7 +23,7 @@ func main() {
 	r := router.NewRouter()
 
 	// 初始化翻译器
-	if err := tip.InitTranslator(); err != nil {
+	if err := pkg.InitTranslator(); err != nil {
 		panic(err)
 	}
 

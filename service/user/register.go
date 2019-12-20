@@ -3,7 +3,7 @@ package user
 import (
 	"net/http"
 
-	"github.com/YahuiAn/Go-bjut/tip"
+	"github.com/YahuiAn/Go-bjut/pkg"
 
 	"github.com/YahuiAn/Go-bjut/logger"
 
@@ -24,7 +24,7 @@ type RegisterInfo struct {
 func Register(c *gin.Context) {
 	var info RegisterInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": pkg.Warn(err)})
 		return
 	}
 

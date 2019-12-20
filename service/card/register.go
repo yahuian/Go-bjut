@@ -3,8 +3,8 @@ package card
 import (
 	"net/http"
 
+	"github.com/YahuiAn/Go-bjut/pkg"
 	"github.com/YahuiAn/Go-bjut/service/user"
-	"github.com/YahuiAn/Go-bjut/tip"
 
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/YahuiAn/Go-bjut/model"
@@ -23,7 +23,7 @@ type cardInfo struct {
 func Register(c *gin.Context) {
 	var info cardInfo
 	if err := c.ShouldBindJSON(&info); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": tip.Warn(err)})
+		c.JSON(http.StatusBadRequest, gin.H{"msg": pkg.Warn(err)})
 		return
 	}
 
