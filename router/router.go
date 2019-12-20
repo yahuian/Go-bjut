@@ -33,6 +33,7 @@ func NewRouter() *gin.Engine {
 		v1.GET("card/index", card.Index)
 		v1.GET("dynamic/:id", dynamic.GetDynamicById)
 		v1.GET("dynamic/", dynamic.Index)
+		v1.GET("comment/:id", comment.GetCommentByDynamicID)
 
 		// 需要登陆保护的
 		auth := v1.Group("")
