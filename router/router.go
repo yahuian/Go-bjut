@@ -31,7 +31,7 @@ func NewRouter() *gin.Engine {
 		v1.POST("/user/login", user.Login)
 
 		v1.GET("card/index", card.Index)
-		v1.GET("dynamic/:id", dynamic.GetDynamicById)
+		v1.GET("dynamic/:id", dynamic.GetDynamicByID)
 		v1.GET("dynamic/", dynamic.Index)
 		v1.GET("comment/:id", comment.GetCommentByDynamicID)
 

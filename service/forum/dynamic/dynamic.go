@@ -20,7 +20,7 @@ type DisplayDynamic struct {
 	Content  string
 }
 
-func GetDynamicById(c *gin.Context) {
+func GetDynamicByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"msg": "错误的动态ID"})
