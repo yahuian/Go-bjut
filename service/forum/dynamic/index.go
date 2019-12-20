@@ -3,11 +3,20 @@ package dynamic
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/YahuiAn/Go-bjut/logger"
 	"github.com/YahuiAn/Go-bjut/model"
 	"github.com/gin-gonic/gin"
 )
+
+type IndexDynamic struct {
+	ID        uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	NickName  string
+	Title     string
+}
 
 func Index(c *gin.Context) {
 	pageIndex, err := strconv.Atoi(c.DefaultQuery("page", "1")) // 页号
@@ -23,9 +32,11 @@ func Index(c *gin.Context) {
 
 	offset := (pageIndex - 1) * pageSize
 	// gorm在查询多条数据时，即使没有找到数据，也不会报错，这点和查询单条数据时不一样，算是一个小坑
-	var dynamics []model.Dynamic
+	var dynamics []IndexDynamic
 	fields := []string{"id", "created_at", "updated_at", "nick_name", "title"} // 主页不显示动态的正文内容
-	err = model.DB.Select(fields).Offset(offset).Limit(pageSize).Order("updated_at desc").Find(&dynamics).Error
+	err = model.DB.Table("dynamics").Select(fields).Offset(offset).Limit(pageSize).
+		Order("updated_at desc").Scan(&dynamics).Error
+
 	if err != nil {
 		logger.Error.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "数据库查询失败"})
