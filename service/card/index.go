@@ -18,9 +18,13 @@ type cardDisplay struct {
 	Number     string
 	Location   string
 	Registrant string
-	CreatedAt  time.Time // TODO 返回前端可读性良好的时间格式
+	CreatedAt  time.Time
 	Status     string
 }
+
+// golang标准库struct time，默认是以rfc3339的格式进行序列化反序列化的
+// 如果想要用别的时间格式，就得重写MarshalJSON、UnmarshalJSON方法，不过这样就要动别处的代码
+// 权衡后规定：前后端统一用rfc3339的格式传递时间，对于时间的友好显示操作由前端来处理
 
 func Index(c *gin.Context) {
 	pageIndex, err := strconv.Atoi(c.Query("page")) // 页号

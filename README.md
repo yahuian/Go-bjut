@@ -21,3 +21,6 @@
 3. fixed: 修改的bug
 4. security: 修改的关于安全的bug
 5. removed: 删除的功能
+## 前后端数据交互
+1. json
+2. 时间统一用rfc3339格式
