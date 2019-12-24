@@ -23,7 +23,6 @@ type HomeInfo struct {
 	Major     string
 	ClassName string
 	Number    string
-	RealName  string
 }
 
 // 用户主页

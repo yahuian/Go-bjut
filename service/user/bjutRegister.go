@@ -36,7 +36,6 @@ type baseInfo struct {
 	Major     string `json:"major"`
 	ClassName string `json:"class"`
 	Number    string `json:"stuNum"`
-	RealName  string `json:"sutName"` // sutName这个锅该小美API来背
 }
 
 // 登录bjut正方教务系统所需信息
@@ -107,7 +106,6 @@ func BjutRegister(c *gin.Context) {
 		Major:     info.Major,
 		ClassName: info.ClassName,
 		Number:    &info.Number,
-		RealName:  info.RealName,
 	}
 
 	// 插入数据

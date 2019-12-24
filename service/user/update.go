@@ -24,7 +24,6 @@ type updateInfo struct {
 	Major       string
 	ClassName   string
 	Number      string
-	RealName    string
 }
 
 func Update(c *gin.Context) {

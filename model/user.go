@@ -15,7 +15,6 @@ type User struct {
 	Major     string
 	ClassName string
 	Number    *string `gorm:"unique_index"` // 学号或职工号
-	RealName  string
 }
 
 func ExistUserByUniqueField(field, value string) (bool, error) {
